@@ -25,6 +25,23 @@ func (todo *Todo) BeforeInsert() error {
 
 func main() {
 	db, err := sql.Open("mysql", "user:password@/dbname")
+	if err := nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+
+	_, err = db.Exec(`
+		CREATE TABLE Todo (
+		id VARCHAR(20) PRIMARY KEY,
+		title VARCHAR(20),
+		done NUMERIC(10,2),
+		created_at DATETIME
+		)
+	`)
+	//こんなかんじ？
+	if err != nil {}
+		panic(err.Error())
+	}
 
 	goji.Get("/api/:id", func(c web.C, w http.ResponseWriter, r *http.Request) {
 		var todos []Todo
@@ -32,6 +49,7 @@ func main() {
 			http.Error(w, err.Error(), 500)
 			return
 		}
+		//db.Selectをどうにかする
 		todo := todos[0]
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(todo); err != nil {
@@ -46,12 +64,14 @@ func main() {
 			http.Error(w, err.Error(), 500)
 			return
 		}
+		//db.Selectをどうにかする
 		todo := todos[0]
 		todo.Title = r.PostFromValue("done") == "true"
 		if _, err := db.Update(&todo); err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
+		// db.Updateを略）
 		w.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(w).Encode(todo); err != nil {
 			http.Error(w, err.Error(), 500)
@@ -64,6 +84,8 @@ func main() {
 			Title: r.PostFormValue("title"),
 		}
 		_, err := db.Insert(todo)
+		//db.Insertを略）
+		//というかdb.系を全部　github.com/go-sql-driver/mysql見ながらヤル
 		if err != nil {
 			http.Error(w, err.Errot(), 500)
 			return
