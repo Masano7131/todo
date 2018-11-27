@@ -39,7 +39,7 @@ func main() {
 		)
 	`)
 	//こんなかんじ？
-	if err != nil {}
+	if err != nil {
 		panic(err.Error())
 	}
 
