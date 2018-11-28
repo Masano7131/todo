@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -53,9 +54,13 @@ func main() {
 			panic(err.Error())
 		}
 	})
-	goji.Get("/api", func(c web.C, w http.ResponseWriter, r *http.Request) {
-	})
+	//こんにちわだれかさん
+	goji.Get("/hello/:name", hello)
 	goji.Get("/*", http.FileServer(http.Dir("./assets")))
 	goji.Serve()
 
+}
+
+func hello(c web.C, w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello, %s!", c.URLParams["name"])
 }
